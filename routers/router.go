@@ -8,12 +8,20 @@
 package routers
 
 import (
-	"todo-api/controllers"
-
+	"fmt"
 	beego "github.com/beego/beego/v2/server/web"
+	"github.com/getsentry/sentry-go"
+	"todo-api/controllers"
 )
 
 func init() {
+	sentryDNS, _ := beego.AppConfig.String("sentryDNS")
+	if err := sentry.Init(sentry.ClientOptions{
+		Dsn:   sentryDNS,
+		Debug: true,
+	}); err != nil {
+		fmt.Printf("Sentry initialization failed: %v\n", err)
+	}
 	ns := beego.NewNamespace("/v1",
 		beego.NSNamespace("/object",
 			beego.NSInclude(
